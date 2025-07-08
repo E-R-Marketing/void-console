@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VOID CONSOLE</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #0a0a23, #1a0633);
+      color: #dcd3ff;
+      font-family: 'IBM Plex Mono', monospace;
+      overflow-x: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -2;
+    }
+    .overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.65);
+      z-index: -1;
+    }
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 20px;
+      background: #dcd3ff;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      50.01%, 100% { opacity: 0; }
+    }
+    .ripple {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(150, 122, 255, 0.25);
+      transform: translate(-50%, -50%) scale(0);
+      animation: ripple-effect 1s ease-out;
+      pointer-events: none;
+    }
+    @keyframes ripple-effect {
+      to {
+        transform: translate(-50%, -50%) scale(6);
+        opacity: 0;
+      }
+    }
+    .dream-log {
+      font-size: 0.8rem;
+      color: #b489ff;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      max-height: 200px;
+    }
+    input[type="text"] {
+      background-color: transparent;
+      border: none;
+      border-bottom: 1px solid #dcd3ff;
+      color: #dcd3ff;
+      outline: none;
+      width: 100%;
+      padding: 0.5rem 0;
+    }
+    @media (max-width: 768px) {
+      .dream-log {
+        max-height: 120px;
+      }
+    }
+    .feature-box {
+      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0.5rem;
+    }
+    .feature-box:hover {
+      transform: scale(1.03);
+      background: rgba(255,255,255,0.1);
+      border-color: #b489ff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <div class="overlay"></div>
+
+  <div class="p-6 md:p-8 max-w-5xl mx-auto relative z-10">
+    <h1 class="text-3xl md:text-5xl font-bold mb-4 text-purple-200 uppercase">VOID CONSOLE</h1>
+    <p class="text-base md:text-lg text-purple-300 mb-8">Enter your dream. Let the console decode your subconscious.</p>
+    <form id="dreamForm">
+      <input type="text" id="dreamInput" placeholder="Type your dream..." />
+    </form>
+    <div id="logs" class="mt-6 dream-log"></div>
+
+    <section class="mt-10 grid md:grid-cols-2 gap-6">
+      <div class="p-4 feature-box">
+        <h2 class="text-xl text-purple-300 font-bold">🗂 Dream Journal</h2>
+        <p class="text-sm text-purple-200">Chronological record of all your dream entries and interpretations.</p>
+      </div>
+      <div class="p-4 feature-box">
+        <h2 class="text-xl text-purple-300 font-bold">🎨 Decoration Packs</h2>
+        <p class="text-sm text-purple-200">Switch between Cyberpunk, Vintage, Retro-Future, and Alien Monolith themes.</p>
+      </div>
+      <div class="p-4 feature-box">
+        <h2 class="text-xl text-purple-300 font-bold">🪐 Dreamscape Gallery</h2>
+        <p class="text-sm text-purple-200">Gallery of dreams interpreted as cosmic artwork and glyphs.</p>
+      </div>
+      <div class="p-4 feature-box">
+        <h2 class="text-xl text-purple-300 font-bold">🤝 Collaborative Dreamweaving</h2>
+        <p class="text-sm text-purple-200">Blend and visualize shared dreams with other users in real-time.</p>
+      </div>
+      <div class="p-4 feature-box">
+        <h2 class="text-xl text-purple-300 font-bold">🛌 Sleep Tracker Integration</h2>
+        <p class="text-sm text-purple-200">Use biometric data to improve dream analysis and timing.</p>
+      </div>
+      <div class="p-4 feature-box">
+        <h2 class="text-xl text-purple-300 font-bold">⚡ Dream Challenges & Events</h2>
+        <p class="text-sm text-purple-200">Weekly missions to uncover deeper subconscious themes.</p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const dreamInput = document.getElementById('dreamInput');
+    const logs = document.getElementById('logs');
+
+    dreamInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const dream = dreamInput.value.trim();
+        if (dream !== '') {
+          logs.innerHTML += `\n> ${dream}`;
+          decodeDream(dream);
+          dreamInput.value = '';
+        }
+      }
+    });
+
+    function decodeDream(text) {
+      createRipple();
+      setTimeout(() => {
+        const interpretations = [
+          '...Decoding astral fragments...',
+          '...Memory threads stabilizing...',
+          '...Ego boundary breached...',
+          '...Synaptic shimmer mapped...',
+          '...Temporal anomaly traced...'
+        ];
+        const response = interpretations[Math.floor(Math.random() * interpretations.length)];
+        logs.innerHTML += `\n> ${response}`;
+      }, 1000);
+    }
+
+    function createRipple() {
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = `${Math.random() * window.innerWidth}px`;
+      ripple.style.top = `${Math.random() * window.innerHeight}px`;
+      document.body.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 1000);
+    }
+
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      stars = Array.from({ length: 300 }, () => [
+        Math.random() * canvas.width,
+        Math.random() * canvas.height,
+        Math.random() * 1.5 + 0.5
+      ]);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let star of stars) {
+        ctx.beginPath();
+        ctx.arc(star[0], star[1], star[2], 0, 2 * Math.PI);
+        ctx.fillStyle = '#ffffff11';
+        ctx.fill();
+        star[1] += star[2] * 0.15;
+        if (star[1] > canvas.height) star[1] = 0;
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>
